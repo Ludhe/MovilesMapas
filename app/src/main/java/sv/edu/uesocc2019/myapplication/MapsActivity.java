@@ -108,7 +108,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             CameraPosition restaurarVista = new CameraPosition.Builder()
                     .target(posicionAnterior)
                     .zoom(preferencias.getFloat("zoom_anterior", 50))
+                    .bearing(90)
+                    .tilt(45)
                     .build();
+            mMap.addMarker(new MarkerOptions().position(posicionAnterior).title("Universidad").draggable(true));
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(restaurarVista));
 
         }else{
