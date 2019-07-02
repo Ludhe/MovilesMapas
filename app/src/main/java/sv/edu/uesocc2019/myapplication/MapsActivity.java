@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -97,10 +99,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        toogleTools();
-       // mMap.setMinZoomPreference(10);
-       // mMap.setMinZoomPreference(18);
-        if (Double.valueOf(preferencias.getString("latitud_anterior", "0")) != 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                return;
+            }else{
+                mMap.setMyLocationEnabled(preferencias.getBoolean("mi_ubicacion",true));
+            }
+        }
+        // mMap.setMinZoomPreference(10);
+        // mMap.setMinZoomPreference(18);
+        /*if (Double.valueOf(preferencias.getString("latitud_anterior", "0")) != 0) {
             LatLng posicionAnterior = new LatLng(Double.valueOf(
                     preferencias.getString("latitud_anterior", "0")), Double.valueOf(
                     preferencias.getString("longitud_anterior", "0")
@@ -111,20 +120,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .bearing(90)
                     .tilt(45)
                     .build();
-            mMap.addMarker(new MarkerOptions().position(posicionAnterior).title("Universidad").draggable(true));
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(restaurarVista));
 
-        }else{
-         LatLng ues = new LatLng(13.970546, -89.574738);
-        mMap.addMarker(new MarkerOptions().position(ues).title("Universidad").draggable(true));
-        CameraPosition moverues = new CameraPosition.Builder()
-                .target(ues)
-                .zoom(17)
-                .tilt(45)
-                .bearing(90)
-                .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(moverues));
-        }
+        } else {
+        */
+            LatLng ues = new LatLng(13.970546, -89.574738);
+            mMap.addMarker(new MarkerOptions().position(ues).title("Universidad").draggable(true));
+            CameraPosition moverues = new CameraPosition.Builder()
+                    .target(ues)
+                    .zoom(17)
+                    .tilt(45)
+                    .bearing(90)
+                    .build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(moverues));
+     //   }
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -132,7 +141,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "Coordenadas: \n" +
                         "LAtitud: " + latLng.latitude + "\n" +
                         "Longitud:" + latLng.longitude, Toast.LENGTH_LONG).show();
-                ;
             }
         });
 
@@ -175,11 +183,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        }
+        toogleTools();
 
     }
 
