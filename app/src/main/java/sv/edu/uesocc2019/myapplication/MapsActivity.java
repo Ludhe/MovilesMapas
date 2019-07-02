@@ -56,6 +56,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnConfig = findViewById(R.id.btnConfig);
         cmbTiposMapa.setAdapter(adaptador);
 
+        cmbTiposMapa.setSelection(preferencias.getInt("tipo_mapa", 0));
+
         cmbTiposMapa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -171,5 +173,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(preferencias.getBoolean("zoom", false));
         mMap.getUiSettings().setCompassEnabled(preferencias.getBoolean("brujula", false));
         mMap.getUiSettings().setMapToolbarEnabled(preferencias.getBoolean("barra_tareas", false));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        preferencias.edit()
+                .putInt("tipo_mapa", cmbTiposMapa.getSelectedItemPosition()).apply();
+
     }
 }
