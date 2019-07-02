@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "circulos_y_marcadores";
-    private static final String CREAR_TABLA_MARCADORES = "";
-    private static final String CREAR_TABLA_CIRCULOS = "";
+    private static final String CREAR_TABLA_MARCADORES = "CREATE TABLE marcadores (id INTEGER PRIMARY KEY," +
+            " latitud DOUBLE, longitud DOUBLE, titulo TEXT, arrastrable INTEGER)";
+    private static final String CREAR_TABLA_CIRCULOS = "CREATE TABLE circulos (id INTEGER PRIMARY KEY," +
+            " latitud DOUBLE, longitud DOUBLE, radio INTEGER, color_borde INTEGER, color_relleno Integer," +
+            " ancho_borde INTEGER)";
     private static final int DATABASE_VERSION = 1;
 
     public SQLiteHelper(Context context) {
@@ -17,17 +20,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String crearTablaCarreras = "CREATE TABLE carreras (codigo TEXT PRIMARY KEY, nombre TEXT)";
-        String crearTablaAlumnos = "CREATE TABLE estudiantes (id INTEGER PRIMARY KEY, nombre TEXT, apellido TEXT, " +
-                "sexo INTEGER, carnet TEXT, carrera TEXT, FOREIGN KEY (carrera) REFERENCES carreras(codigo))";
-        db.execSQL(crearTablaCarreras);
-        db.execSQL(crearTablaAlumnos);
-
-
+        //String crearTablaCarreras = "CREATE TABLE carreras (codigo TEXT PRIMARY KEY, nombre TEXT)";
+        //String crearTablaAlumnos = "CREATE TABLE estudiantes (id INTEGER PRIMARY KEY, nombre TEXT, apellido TEXT, " +
+        //       "sexo INTEGER, carnet TEXT, carrera TEXT, FOREIGN KEY (carrera) REFERENCES carreras(codigo))";
+        db.execSQL(CREAR_TABLA_CIRCULOS);
+        db.execSQL(CREAR_TABLA_MARCADORES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }
