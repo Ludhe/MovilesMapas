@@ -60,19 +60,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cmbTiposMapa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        break;
-                    case 1:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                        break;
-                    case 2:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        break;
-                    case 3:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        break;
+                if(mMap != null) {
+                    switch (i) {
+                        case 0:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                            break;
+                        case 1:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                            break;
+                        case 2:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                            break;
+                        case 3:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                            break;
+                    }
                 }
             }
 
