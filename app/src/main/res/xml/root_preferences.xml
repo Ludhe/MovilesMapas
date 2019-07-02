@@ -44,6 +44,15 @@
             android:min="1"
             android:defaultValue="5"
             app:showSeekBarValue="true"/>
+        <SeekBarPreference
+            android:key="radio_level"
+            android:title="Radio Círculo"
+            android:summary="Cambia el valor en metros del radio al crear un nuevo círculo"
+            android:max="500"
+            android:min="1"
+            android:defaultValue="50"
+            app:showSeekBarValue="true"/>
+
 
     </PreferenceCategory>
 

@@ -139,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapClick(LatLng latLng) {
                 Toast.makeText(MapsActivity.this, "Coordenadas: \n" +
-                        "LAtitud: " + latLng.latitude + "\n" +
+                        "Latitud: " + latLng.latitude + "\n" +
                         "Longitud:" + latLng.longitude, Toast.LENGTH_LONG).show();
             }
         });
@@ -148,11 +148,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Toast.makeText(MapsActivity.this, "Coordenadas: \n" +
-                        "LAtitud: " + latLng.latitude + "\n" +
+                        "Latitud: " + latLng.latitude + "\n" +
                         "Longitud:" + latLng.longitude, Toast.LENGTH_LONG).show();
                 CircleOptions circleOptions = new CircleOptions();
                 circleOptions.center(latLng);
-                circleOptions.radius(200);
+                circleOptions.radius(preferencias.getInt("radio_level", 50));
                 circleOptions.strokeColor(Color.BLACK);
                 circleOptions.fillColor(Color.BLUE);
                 circleOptions.strokeWidth(1);
