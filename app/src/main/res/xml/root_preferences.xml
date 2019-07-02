@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
         app:key="controls_category"
@@ -28,13 +29,21 @@
             app:title="Mostrar brujula"/>
         <SwitchPreferenceCompat
             app:key="mi_ubicacion"
-            app:title="Mostrar boton para ir a la ubicacion actual"/>
+            app:title="Mostrar ir a la ubicacion actual"/>
         <SwitchPreferenceCompat
             app:key="gestos_zoom"
             app:title="Desplazarse por el mapa"/>
         <SwitchPreferenceCompat
             app:key="barra_tareas"
             app:title="Activar barra de tareas"/>
+        <SeekBarPreference
+            android:key="zoom_level"
+            android:title="Valor máximo del zoom"
+            android:summary="Cambia el valor máximo para hacer zoom."
+            android:max="20"
+            android:min="1"
+            android:defaultValue="5"
+            app:showSeekBarValue="true"/>
 
     </PreferenceCategory>
 
