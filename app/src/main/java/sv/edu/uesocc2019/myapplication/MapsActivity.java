@@ -1,7 +1,6 @@
 package sv.edu.uesocc2019.myapplication;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -60,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cmbTiposMapa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mMap != null) {
+                if (mMap != null) {
                     switch (i) {
                         case 0:
                             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -167,10 +166,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void toogleTools(){
-        mMap.getUiSettings().setScrollGesturesEnabled(true);
+    private void toogleTools() {
+        mMap.getUiSettings().setScrollGesturesEnabled(preferencias.getBoolean("gestos_zoom", false));
         mMap.getUiSettings().setZoomControlsEnabled(preferencias.getBoolean("zoom", false));
         mMap.getUiSettings().setCompassEnabled(preferencias.getBoolean("brujula", false));
-        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(preferencias.getBoolean("barra_tareas", false));
     }
 }

@@ -29,6 +29,12 @@
         <SwitchPreferenceCompat
             app:key="mi_ubicacion"
             app:title="Mostrar boton para ir a la ubicacion actual"/>
+        <SwitchPreferenceCompat
+            app:key="gestos_zoom"
+            app:title="Desplazarse por el mapa"/>
+        <SwitchPreferenceCompat
+            app:key="barra_tareas"
+            app:title="Activar barra de tareas"/>
 
     </PreferenceCategory>
 
