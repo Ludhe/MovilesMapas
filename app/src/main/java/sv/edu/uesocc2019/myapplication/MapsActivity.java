@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -97,8 +98,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         toogleTools();
-        mMap.setMinZoomPreference(10);
-        mMap.setMinZoomPreference(18);
+       // mMap.setMinZoomPreference(10);
+       // mMap.setMinZoomPreference(18);
         if (Double.valueOf(preferencias.getString("latitud_anterior", "0")) != 0) {
             LatLng posicionAnterior = new LatLng(Double.valueOf(
                     preferencias.getString("latitud_anterior", "0")), Double.valueOf(
@@ -110,8 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(restaurarVista));
 
-        }
-       /* LatLng ues = new LatLng(13.970546, -89.574738);
+        }else{
+         LatLng ues = new LatLng(13.970546, -89.574738);
         mMap.addMarker(new MarkerOptions().position(ues).title("Universidad").draggable(true));
         CameraPosition moverues = new CameraPosition.Builder()
                 .target(ues)
@@ -120,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .bearing(90)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(moverues));
-*/
+        }
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
