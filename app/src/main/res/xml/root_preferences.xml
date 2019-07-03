@@ -54,7 +54,7 @@
         android:key="radio_level"
         android:max="500"
         android:min="1"
-        android:summary="Cambia el valor en metros del radio al crear un nuevo círculo"
+        android:summary="Cambia el valor en metros del radio al crear un nuevo círculo (medido en metros)"
         android:title="Radio Círculo"
         app:showSeekBarValue="true" />
     </PreferenceCategory>

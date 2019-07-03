@@ -315,4 +315,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         marcadores.close();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        this.recreate();
+    }
 }
