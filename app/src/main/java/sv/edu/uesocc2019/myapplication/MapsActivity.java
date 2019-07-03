@@ -115,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         restaurarMarcadores();
+        restaurarCirculos();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
@@ -276,6 +277,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         circleOptions.fillColor(Color.BLUE);
         circleOptions.strokeWidth(1);
         mMap.addCircle(circleOptions);
+        contenido.clear();
+        contenido.put("longitud", latLng.longitude);
+        contenido.put("latitud", latLng.latitude);
+        contenido.put("radio", preferencias.getInt("radio_level", 50));
+        contenido.put("color_borde", Color.BLACK);
+        contenido.put("color_relleno", Color.BLUE);
+        contenido.put("ancho_borde", 1);
+        db.insert("circulos", null, contenido);
     }
 
     public void restaurarCirculos() {
