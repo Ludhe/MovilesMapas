@@ -245,6 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setHint("Título del marcador");
         input.setLayoutParams(lp);
         constructor.setView(input);
 
