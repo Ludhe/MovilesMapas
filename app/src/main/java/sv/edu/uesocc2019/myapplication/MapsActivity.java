@@ -1,10 +1,12 @@
 package sv.edu.uesocc2019.myapplication;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,6 +14,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -37,6 +41,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             new String[]{"Normal", "Satelite", "Hibrido", "Terreno"};
     private Spinner cmbTiposMapa;
     private Button btnConfig;
+    AlertDialog.Builder constructor;
+    Context insideContext;
     SharedPreferences preferencias;
 
 
@@ -147,6 +153,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+
+                armarDialog(latLng);
+
+
+                /*
                 Toast.makeText(MapsActivity.this, "Coordenadas: \n" +
                         "Latitud: " + latLng.latitude + "\n" +
                         "Longitud:" + latLng.longitude, Toast.LENGTH_LONG).show();
@@ -157,6 +168,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 circleOptions.fillColor(Color.BLUE);
                 circleOptions.strokeWidth(1);
                 mMap.addCircle(circleOptions);
+                */
+
 
             }
         });
@@ -204,5 +217,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .putString("latitud_anterior", (String.valueOf(mMap.getCameraPosition().target.latitude)))
                 .apply();
     }
+
+    public void armarDialog(LatLng latLng){
+        insideContext = MapsActivity.this;
+        constructor = new AlertDialog.Builder(insideContext);
+        constructor.setTitle("Agregar").setMessage("¿Agregar círculo o marcador?");
+        constructor.setPositiveButton("Marcador", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                armarMarcador();
+            }
+        });
+        constructor.setNeutralButton("Círculo", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialogo = constructor.create();
+
+        dialogo.show();
+    }
+
+    public void armarMarcador(){
+        insideContext = MapsActivity.this;
+        constructor = new AlertDialog.Builder(insideContext);
+        constructor.setTitle("Agregar Marcador").setMessage("Ingrese el título del marcador");
+        constructor.setCancelable(false);
+        //crea el input para el título
+        final EditText input = new EditText(MapsActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        constructor.setView(input);
+
+        constructor.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String tituloMarcador = input.getText().toString();
+            }
+        });
+        constructor.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialogo = constructor.create();
+
+        dialogo.show();
+    }
+
 
 }
