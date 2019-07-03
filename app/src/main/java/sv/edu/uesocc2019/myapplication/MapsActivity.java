@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -218,20 +219,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .apply();
     }
 
-    public void armarDialog(LatLng latLng){
+    public void armarDialog(final LatLng latLng){
         insideContext = MapsActivity.this;
         constructor = new AlertDialog.Builder(insideContext);
         constructor.setTitle("Agregar").setMessage("¿Agregar círculo o marcador?");
         constructor.setPositiveButton("Marcador", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                armarMarcador();
+                armarMarcador(latLng);
             }
         });
-        constructor.setNeutralButton("Círculo", new DialogInterface.OnClickListener(){
+        constructor.setNegativeButton("Círculo", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+            agregarCirculo(latLng);
             }
         });
 
@@ -240,8 +241,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogo.show();
     }
 
-    public void armarMarcador(){
-        insideContext = MapsActivity.this;
+    public void armarMarcador(final LatLng latLng){
         constructor = new AlertDialog.Builder(insideContext);
         constructor.setTitle("Agregar Marcador").setMessage("Ingrese el título del marcador");
         constructor.setCancelable(false);
@@ -257,6 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String tituloMarcador = input.getText().toString();
+                mMap.addMarker(new MarkerOptions().position(latLng).title(tituloMarcador).draggable(false));
             }
         });
         constructor.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -269,5 +270,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogo.show();
     }
 
-
+    public void agregarCirculo(LatLng latLng){
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(latLng);
+        circleOptions.radius(preferencias.getInt("radio_level", 50));
+        circleOptions.strokeColor(Color.BLACK);
+        circleOptions.fillColor(Color.BLUE);
+        circleOptions.strokeWidth(1);
+        mMap.addCircle(circleOptions);
+    }
 }
