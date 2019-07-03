@@ -2,11 +2,14 @@ package sv.edu.uesocc2019.myapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,8 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,6 +39,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
+    final SQLiteHelper sqlh = new SQLiteHelper(MapsActivity.this);
+    SQLiteDatabase db;
+    final ContentValues contenido = new ContentValues();
     final String[] tiposmapa =
             new String[]{"Normal", "Satelite", "Hibrido", "Terreno"};
     private Spinner cmbTiposMapa;
@@ -45,11 +49,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     AlertDialog.Builder constructor;
     Context insideContext;
     SharedPreferences preferencias;
+    Cursor circulos, marcadores;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        db = sqlh.getWritableDatabase();
+        circulos = db.query("circulos", null, null, null, null, null, null);
+        marcadores = db.query("marcadores", null, null, null, null, null, null);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -106,16 +114,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        restaurarMarcadores();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
                 return;
-            }else{
-                mMap.setMyLocationEnabled(preferencias.getBoolean("mi_ubicacion",true));
+            } else {
+                mMap.setMyLocationEnabled(preferencias.getBoolean("mi_ubicacion", true));
             }
         }
         mMap.setMinZoomPreference(1);
-         mMap.setMaxZoomPreference(preferencias.getInt("zoom_level", 5));
+        mMap.setMaxZoomPreference(preferencias.getInt("zoom_level", 5));
         if (Double.valueOf(preferencias.getString("latitud_anterior", "0")) != 0) {
             LatLng posicionAnterior = new LatLng(Double.valueOf(
                     preferencias.getString("latitud_anterior", "0")), Double.valueOf(
@@ -154,24 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-
                 armarDialog(latLng);
-
-
-                /*
-                Toast.makeText(MapsActivity.this, "Coordenadas: \n" +
-                        "Latitud: " + latLng.latitude + "\n" +
-                        "Longitud:" + latLng.longitude, Toast.LENGTH_LONG).show();
-                CircleOptions circleOptions = new CircleOptions();
-                circleOptions.center(latLng);
-                circleOptions.radius(preferencias.getInt("radio_level", 50));
-                circleOptions.strokeColor(Color.BLACK);
-                circleOptions.fillColor(Color.BLUE);
-                circleOptions.strokeWidth(1);
-                mMap.addCircle(circleOptions);
-                */
-
-
             }
         });
 
@@ -219,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .apply();
     }
 
-    public void armarDialog(final LatLng latLng){
+    public void armarDialog(final LatLng latLng) {
         insideContext = MapsActivity.this;
         constructor = new AlertDialog.Builder(insideContext);
         constructor.setTitle("Agregar").setMessage("¿Agregar círculo o marcador?");
@@ -229,10 +221,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 armarMarcador(latLng);
             }
         });
-        constructor.setNegativeButton("Círculo", new DialogInterface.OnClickListener(){
+        constructor.setNegativeButton("Círculo", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            agregarCirculo(latLng);
+                agregarCirculo(latLng);
             }
         });
 
@@ -241,7 +233,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogo.show();
     }
 
-    public void armarMarcador(final LatLng latLng){
+    public void armarMarcador(final LatLng latLng) {
         constructor = new AlertDialog.Builder(insideContext);
         constructor.setTitle("Agregar Marcador").setMessage("Ingrese el título del marcador");
         constructor.setCancelable(false);
@@ -258,6 +250,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(DialogInterface dialog, int which) {
                 String tituloMarcador = input.getText().toString();
                 mMap.addMarker(new MarkerOptions().position(latLng).title(tituloMarcador).draggable(false));
+                contenido.clear();
+                contenido.put("longitud", latLng.longitude);
+                contenido.put("latitud", latLng.latitude);
+                contenido.put("titulo", tituloMarcador);
+                contenido.put("arrastrable", false);
+                db.insert("marcadores", null, contenido);
             }
         });
         constructor.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -270,7 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogo.show();
     }
 
-    public void agregarCirculo(LatLng latLng){
+    public void agregarCirculo(LatLng latLng) {
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(latLng);
         circleOptions.radius(preferencias.getInt("radio_level", 50));
@@ -278,5 +276,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         circleOptions.fillColor(Color.BLUE);
         circleOptions.strokeWidth(1);
         mMap.addCircle(circleOptions);
+    }
+
+    public void restaurarCirculos() {
+        while (circulos.moveToNext()) {
+            CircleOptions circleOptions = new CircleOptions();
+            LatLng latLng = new LatLng(circulos.getDouble(circulos.getColumnIndex("latitud")),
+                    circulos.getDouble(circulos.getColumnIndex("longitud")));
+            circleOptions.center(latLng);
+            circleOptions.radius(circulos.getInt(circulos.getColumnIndex("radio")));
+            circleOptions.strokeColor(circulos.getInt(circulos.getColumnIndex("color_borde")));
+            circleOptions.fillColor(circulos.getInt(circulos.getColumnIndex("color_relleno")));
+            circleOptions.strokeWidth(circulos.getInt(circulos.getColumnIndex("ancho_borde")));
+            mMap.addCircle(circleOptions);
+        }
+        circulos.close();
+    }
+
+    public void restaurarMarcadores() {
+
+        while (marcadores.moveToNext()) {
+            LatLng latLng = new LatLng(marcadores.getDouble(marcadores.getColumnIndex("latitud")),
+                    marcadores.getDouble(marcadores.getColumnIndex("longitud")));
+            mMap.addMarker(new MarkerOptions().position(latLng).
+                    title(marcadores.getString(marcadores.getColumnIndex("titulo"))).
+                    draggable(false));
+        }
+        marcadores.close();
     }
 }

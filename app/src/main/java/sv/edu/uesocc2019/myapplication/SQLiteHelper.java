@@ -20,14 +20,21 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //String crearTablaCarreras = "CREATE TABLE carreras (codigo TEXT PRIMARY KEY, nombre TEXT)";
-        //String crearTablaAlumnos = "CREATE TABLE estudiantes (id INTEGER PRIMARY KEY, nombre TEXT, apellido TEXT, " +
-        //       "sexo INTEGER, carnet TEXT, carrera TEXT, FOREIGN KEY (carrera) REFERENCES carreras(codigo))";
         db.execSQL(CREAR_TABLA_CIRCULOS);
         db.execSQL(CREAR_TABLA_MARCADORES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS circulos");
+        db.execSQL("DROP TABLE IF EXISTS marcadores");
+        onCreate(db);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS circulos");
+        db.execSQL("DROP TABLE IF EXISTS marcadores");
+        onCreate(db);
     }
 }
