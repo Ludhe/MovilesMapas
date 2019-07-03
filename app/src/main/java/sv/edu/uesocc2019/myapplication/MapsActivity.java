@@ -134,8 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             CameraPosition restaurarVista = new CameraPosition.Builder()
                     .target(posicionAnterior)
                     .zoom(preferencias.getFloat("zoom_anterior", 50))
-                    .bearing(90)
-                    .tilt(45)
+                    .bearing(preferencias.getFloat("bearing", 90))
+                    .tilt(preferencias.getFloat("tilt", 45))
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(restaurarVista));
 
@@ -209,6 +209,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .putFloat("zoom_anterior", mMap.getCameraPosition().zoom)
                 .putString("longitud_anterior", (String.valueOf(mMap.getCameraPosition().target.longitude)))
                 .putString("latitud_anterior", (String.valueOf(mMap.getCameraPosition().target.latitude)))
+                .putFloat("tilt", mMap.getCameraPosition().tilt)
+                .putFloat("bearing", mMap.getCameraPosition().bearing)
                 .apply();
     }
 
